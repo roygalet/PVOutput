@@ -14,4 +14,11 @@
         android:layout_height="wrap_content"
         android:text="Hello World!"
         android:id="@+id/txtData" />
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:id="@+id/barChart">
+
+    </com.github.mikephil.charting.charts.BarChart>
 </RelativeLayout>

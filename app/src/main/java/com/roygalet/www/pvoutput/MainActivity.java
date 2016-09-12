@@ -6,20 +6,30 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private String data;
+    BarChart barChart;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         PVDataDownloader dl = new PVDataDownloader();
+
+        barChart = (BarChart)findViewById(R.id.barChart);
 
         dl.execute();
 
@@ -84,9 +94,23 @@ public class MainActivity extends AppCompatActivity {
                 data=result;
                 String[] records = data.split(";");
                 String[][] pvoutput = new String[records.length][];
+                ArrayList<BarEntry> powerData = new ArrayList<>();
+                ArrayList<String> dateData = new ArrayList<>();
+
                 for(int index=0; index<records.length; index++){
+
                     pvoutput[index] = records[index].split(",");
+                    powerData.add(new BarEntry(Float.valueOf( pvoutput[index][1]), index));
+                    dateData.add(pvoutput[index][0]);
                 }
+                BarDataSet barDataSet = new BarDataSet(powerData,"Power Generated");
+
+                BarData barData = new BarData(dateData, barDataSet);
+
+                barChart.setData(barData);
+                barChart.setTouchEnabled(true);
+                barChart.setDragEnabled(true);
+
                 TextView txtData = (TextView)findViewById(R.id.txtData);
                 txtData.setText(records.length + " records found");
             }
